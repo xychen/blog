@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: xychen.github.io/sitemap.xml
+Sitemap: https://xychen.github.io/sitemap.xml

@@ -15,5 +15,5 @@ deploy:
     repo: xychen/xychen.github.io
     fqdn: <custom-domain-if-needed>
     target_branch: master
-    email: <github-email>
-    name: <github-username>
+    email: cxybjfu@126.com
+    name: xychen

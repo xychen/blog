@@ -1,7 +1,6 @@
 ---
 title: "Helloworld"
 date: 2018-09-16T01:39:06+08:00
-draft: true
 ---
 
 ### 测试

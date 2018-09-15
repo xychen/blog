@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on xychen&#39;s blog</title>
+    <link>xychen.github.io/post/</link>
+    <description>Recent content in Posts on xychen&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 16 Dec 2017 20:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="xychen.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>supervisor在PHP项目中的使用</title>
+      <link>xychen.github.io/post/2017-12-17-php-supervisor/</link>
+      <pubDate>Sat, 16 Dec 2017 20:00:00 +0000</pubDate>
+      
+      <guid>xychen.github.io/post/2017-12-17-php-supervisor/</guid>
+      <description>使用背景 很多场景下，我们需要使用PHP开发一些脚本，用于处理离线数据。常用的实现方式有以下几种: crontab：这种方式适用于定时任务，对于</description>
+    </item>
+    
+    <item>
+      <title>常用配置文件的查找</title>
+      <link>xychen.github.io/post/2017-12-16-conf-fine/</link>
+      <pubDate>Sat, 16 Dec 2017 11:00:00 +0000</pubDate>
+      
+      <guid>xychen.github.io/post/2017-12-16-conf-fine/</guid>
+      <description>有些时候，我们不能直观的看到相关软件配置文件的位置。最简单的办法，我们可以使用find命令直接查找文件，当然你需要提前知道配置文件的名称。当</description>
+    </item>
+    
+    <item>
+      <title>浅谈go面向对象与接口</title>
+      <link>xychen.github.io/post/2017-05-25-go-oop/</link>
+      <pubDate>Thu, 25 May 2017 20:00:00 +0000</pubDate>
+      
+      <guid>xychen.github.io/post/2017-05-25-go-oop/</guid>
+      <description>浅谈go面向对象与接口 一、面向对象 go面向对象 go中没有类的概念，面向对象是通过结构体来实现的 结构体可以定义属性，也可以定义成员方法 成员方法</description>
+    </item>
+    
+    <item>
+      <title>排查php中curl请求超时问题</title>
+      <link>xychen.github.io/post/2016-09-18-php-curl-timeout/</link>
+      <pubDate>Sun, 18 Sep 2016 09:00:00 +0000</pubDate>
+      
+      <guid>xychen.github.io/post/2016-09-18-php-curl-timeout/</guid>
+      <description>问题描述 一个项目需要抓取一些网页数据，使用的是php中的curl扩展，模拟浏览器行为，通过http协议请求web数据。 今天收到了短信报警，爬</description>
+    </item>
+    
+    <item>
+      <title>使用netcat与服务器间传输文件</title>
+      <link>xychen.github.io/post/2016-07-02-netcat-usage/</link>
+      <pubDate>Sat, 02 Jul 2016 02:00:00 +0000</pubDate>
+      
+      <guid>xychen.github.io/post/2016-07-02-netcat-usage/</guid>
+      <description>前言 换了mac本之后，一直使用item2作为终端，最常用的就是通过ssh连接到远程服务器进行一些开发调试的工作。有时候需要把本地文件上传到服</description>
+    </item>
+    
+    <item>
+      <title>PHP选项信息与函数说明</title>
+      <link>xychen.github.io/post/2015-07-05-php-cli-info/</link>
+      <pubDate>Fri, 05 Jun 2015 09:00:00 +0000</pubDate>
+      
+      <guid>xychen.github.io/post/2015-07-05-php-cli-info/</guid>
+      <description>关于PHP的一些环境配置，读取环境变量相关的函数列表如下： assert_options — 设置/获取断言的各种标志 assert — 检查一个断言是否为 FALSE cli_get_process_title — Returns the current process title cli_set_process_title — Sets the process title dl —</description>
+    </item>
+    
+    <item>
+      <title>Style Test</title>
+      <link>xychen.github.io/post/1970-01-01-test/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>xychen.github.io/post/1970-01-01-test/</guid>
+      <description>This is just a style test post, filled with LoremIpsue. Feel free to delete the file.
+Lorem ipsum dolor Sit amet, consectetur adipiscing elit. Phasellus nisi odio, scelerisque vitae volutpat non, facilisis non erat. In gravida placerat pulvinar. Maecenas ac pretium sem. In consectetur nulla leo, ut maximus nisi volutpat eget. Vestibulum vitae malesuada risus, egestas placerat felis. In sed sollicitudin elit. Sed bibendum porttitor dui.
+Condimentum mauris Accumsan Eu.</description>
+    </item>
+    
+  </channel>
+</rss>

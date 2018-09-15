@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: xychen.github.io/sitemap.xml

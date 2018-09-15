@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>supervisor在PHP项目中的使用 - xychen&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="xychen" />
+  <meta name="description" content="使用背景 很多场景下，我们需要使用PHP开发一些脚本，用于处理离线数据。常用的实现方式有以下几种: crontab：这种方式适用于定时任务，对于" />
+
+  <meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.48" />
+
+
+<link rel="canonical" href="xychen.github.io/post/2017-12-17-php-supervisor/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/xychen.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/xychen.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/xychen.github.io/favicon-16x16.png">
+<link rel="manifest" href="/xychen.github.io/manifest.json">
+<link rel="mask-icon" href="/xychen.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+<link href="/xychen.github.io/dist/even.min.css?v=3.2.0" rel="stylesheet">
+<link href="/xychen.github.io/lib/fancybox/jquery.fancybox-3.1.20.min.css" rel="stylesheet">
+
+
+
+
+<meta property="og:title" content="supervisor在PHP项目中的使用" />
+<meta property="og:description" content="使用背景 很多场景下，我们需要使用PHP开发一些脚本，用于处理离线数据。常用的实现方式有以下几种: crontab：这种方式适用于定时任务，对于" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="xychen.github.io/post/2017-12-17-php-supervisor/" /><meta property="article:published_time" content="2017-12-16T20:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2017-12-16T20:00:00&#43;00:00"/>
+<meta itemprop="name" content="supervisor在PHP项目中的使用">
+<meta itemprop="description" content="使用背景 很多场景下，我们需要使用PHP开发一些脚本，用于处理离线数据。常用的实现方式有以下几种: crontab：这种方式适用于定时任务，对于">
+
+
+<meta itemprop="datePublished" content="2017-12-16T20:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2017-12-16T20:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1654">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="supervisor在PHP项目中的使用"/>
+<meta name="twitter:description" content="使用背景 很多场景下，我们需要使用PHP开发一些脚本，用于处理离线数据。常用的实现方式有以下几种: crontab：这种方式适用于定时任务，对于"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/xychen.github.io/" class="logo">xyChen</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="xychen.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="xychen.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="xychen.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="xychen.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/xychen.github.io/" class="logo">xyChen</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="xychen.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="xychen.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="xychen.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="xychen.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">supervisor在PHP项目中的使用</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-12-16 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#使用背景">使用背景</a></li>
+<li><a href="#supervisor配置">supervisor配置</a></li>
+<li><a href="#信号处理">信号处理</a></li>
+<li><a href="#定时重启">定时重启</a></li>
+<li><a href="#总结">总结</a></li>
+<li><a href="#参考列表">参考列表</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    
+
+    
+    <div class="post-content">
+      
+
+<h2 id="使用背景">使用背景</h2>
+
+<p>很多场景下，我们需要使用PHP开发一些脚本，用于处理离线数据。常用的实现方式有以下几种:</p>
+
+<ul>
+<li><p>crontab：这种方式适用于定时任务，对于数据量较大时不太适合</p></li>
+
+<li><p>循环+后台运行： 启动一个脚本，让其在后台运行，脚本中是一个循环，可以一直处理任务。如果需要多个进程，就多启动几次脚本，简单粗暴。</p></li>
+</ul>
+
+<pre><code>nohup /usr/bin/php dojob.php &gt; /dev/null 2&gt;&amp;1 &amp;
+</code></pre>
+
+<ul>
+<li><p>PHP实现daemon+多进程： 类似nginx、php-fpm的多进程方式，通过fork实现多进程，master进程负责管理，worker进程负责处理具体的任务。</p></li>
+
+<li><p>supervisor管理： 原理和多进程方式类似，supervisor充当一个master进程的角色，相对于PHP自己实现多进程，使用起来更简单一些。
+本文将重点讨论supervisor的方式。</p></li>
+</ul>
+
+<h2 id="supervisor配置">supervisor配置</h2>
+
+<p>supervisor的安装我就不再多说，网上有很多教程，可以自行查找。如下，我直接贴过来一个配置：</p>
+
+<pre><code>[program:test]
+directory = /data/app/
+command = /usr/bin/php test.php
+process_name = %(program_name)s_%(process_num)02d
+numprocs = 1        //启动的进程数
+autostart = true    //supervisord启动的时候，是否自动启动这个任务
+autorestart = true  //进程退出后，是否自动重启该进程
+startsecs = 1
+startretries = 3
+exitcodes = 0,2
+stopsignal = QUIT   //退出时，supervisor给进程发送的信号，可以改成其他的
+stopwaitsecs = 10
+stopasgroup=true
+user = test
+redirect_stderr = false
+stdout_logfile_backups = 90
+stdout_logfile = /data/logs/qrcode.log
+environment = USER=&quot;test&quot;,APP_ENV=&quot;test&quot;
+</code></pre>
+
+<p>我会重点对我备注的这几个配置项如何在PHP项目中正确使用进行说明，并进行代码展示。
+假设的场景，test.php脚本文件的作用是从redis队列中读取数据，并处理数据:</p>
+
+<pre><code>$job = new Job();
+$job-&gt;handle();
+
+class Job
+{
+    private $redis;
+    public function __(){
+        $this-&gt;redis = new \Redis();
+        $this-&gt;redis-&gt;connect('127.0.0.1', 6379);
+    }
+
+    //处理函数
+    public function handle()
+    {
+        while(true) {
+            $data = $this-&gt;redis-&gt;lPop('QUEUE:JOB');
+            if(!$data) {
+                sleep(5);
+                continue;
+            }
+            //do data
+            //比如：将数据存储到文件中……
+            file_put_contents('/data/data.txt', $data, FILE_APPEND);
+        }
+    }
+}
+</code></pre>
+
+<h2 id="信号处理">信号处理</h2>
+
+<pre><code>stopsignal = QUIT   //退出时，supervisor给进程发送的信号
+</code></pre>
+
+<p>当执行supervisorctl stop test操作时,supervisor的管理进程会发出一个 QUIT 信号。test.php脚本中没有处理这个信号，那么test.php进程会直接退出，这样就会有一个问题，假设进程正在写文件，直接退出了这条数据就写失败了。正确的做法是，让进程处理完本次写入再退出：</p>
+
+<ul>
+<li>设置一个while循环的变量 (loop变量，初始值为true)<br /></li>
+<li>绑定信号处理函数: (pcntl_signal)<br /></li>
+<li>while循环中，每次循环进行一次信号分发 (pcntl_signal_dispatch)<br /></li>
+<li>当接收到相应信号时，将loop变量设置为false，那么在下一次循环时，函数将退出执行<br /></li>
+</ul>
+
+<pre><code>$job = new Job();
+$job-&gt;handle();
+
+class Job
+{
+    private $redis;
+    private $loop = true;
+    public function __()
+    {
+        //信号安装
+        $this-&gt;installSignal();
+        $this-&gt;redis = new \Redis();
+        $this-&gt;redis-&gt;connect('127.0.0.1', 6379);
+    }
+
+    //处理函数
+    public function handle()
+    {
+        while($this-&gt;loop) {
+            //信号分发
+            pcntl_signal_dispatch();
+            $data = $this-&gt;redis-&gt;lPop('QUEUE:JOB');
+            if(!$data) {
+                sleep(5);       //spare sleep
+                continue;
+            }
+            //do data
+            //比如：将数据存储到文件中……
+            file_put_contents('/data/data.txt', $data, FILE_APPEND);
+        }
+    }
+
+    //信号安装
+    function installSignal()
+    {
+        //绑定QUIT信号
+        pcntl_signal(SIGQUIT, array($this, 'sigalHndler'));
+        pcntl_signal(SIGTERM, array($this, 'sigalHndler'));
+        pcntl_signal(SIGHUP, array($this, 'sigalHndler'));
+        pcntl_signal(SIGINT, array($this, 'sigalHndler'));
+
+    }
+
+    //信号处理函数
+    private function sigalHndler($signo)
+    {
+        switch ($signo) {
+            case SIGTERM:
+            case SIGHUP:
+            case SIGINT:
+            case SIGQUIT:
+                $this-&gt;loop = false;
+                break;
+            default:
+                // 处理所有其他信号
+        }
+    }
+}
+</code></pre>
+
+<h2 id="定时重启">定时重启</h2>
+
+<p>nginx和php-fpm中有一个机制，worker进程在运行一段时间后，会主动退出，释放资源，master进程会再创建出新的worker进程继续运行，可以在一定程度上避免内存泄漏。supervisor中也可以实现这种功能。</p>
+
+<ul>
+<li>首先在supervisor的配置文件中设置autorestart为true</li>
+</ul>
+
+<pre><code>autorestart = true  //进程退出后，是否自动重启该进程
+</code></pre>
+
+<ul>
+<li>在脚本中添加时间检测的逻辑</li>
+</ul>
+
+<p>至此，我们已经完成了supervisor管理php进程的功能。完整代码如下:</p>
+
+<pre><code>$job = new Job();
+$job-&gt;handle();
+
+class Job
+{
+    const MAX_RUN_TIME = 3600;  //最长运行1小时
+    private $redis;
+    private $loop = true;
+    private $startTime;
+
+    public function __()
+    {
+        //信号安装
+        $this-&gt;installSignal();
+        $this-&gt;redis = new \Redis();
+        $this-&gt;redis-&gt;connect('127.0.0.1', 6379);
+    }
+
+    //处理函数
+    public function handle()
+    {
+        $this-&gt;startTime = time();
+        while($this-&gt;loop) {
+            //检查运行时间
+            $this-&gt;checkRunTime();
+            //信号分发
+            pcntl_signal_dispatch();
+            $data = $this-&gt;redis-&gt;lPop('QUEUE:JOB');
+            if(!$data) {
+                sleep(5);       //spare sleep
+                continue;
+            }
+            //do data
+            //比如：将数据存储到文件中……
+            file_put_contents('/data/data.txt', $data, FILE_APPEND);
+        }
+    }
+
+    //检查运行时间
+    private function checkRunTime()
+    {
+        if (time() - $this-&gt;startTime &gt; self::MAX_RUN_TIME) {
+            $this-&gt;loop = false;
+        }
+    }
+
+    //信号安装
+    function installSignal()
+    {
+        //绑定QUIT信号
+        pcntl_signal(SIGQUIT, array($this, 'sigalHndler'));
+        pcntl_signal(SIGTERM, array($this, 'sigalHndler'));
+        pcntl_signal(SIGHUP, array($this, 'sigalHndler'));
+        pcntl_signal(SIGINT, array($this, 'sigalHndler'));
+
+    }
+
+    //信号处理函数
+    private function sigalHndler($signo)
+    {
+        switch ($signo) {
+            case SIGTERM:
+            case SIGHUP:
+            case SIGINT:
+            case SIGQUIT:
+                $this-&gt;loop = false;
+                break;
+            default:
+                // 处理所有其他信号
+        }
+    }
+}
+</code></pre>
+
+<h2 id="总结">总结</h2>
+
+<p>使用supervisor管理php脚本,要做好以下几点：<br />
+- 信号处理：是程序优雅的退出<br />
+- 主动重启：php的运行进程工作一段时间后重新退出，supervisor启动新的进程继续工作</p>
+
+<h2 id="参考列表">参考列表</h2>
+
+<ul>
+<li><a href="http://liyangliang.me/posts/2015/06/using-supervisor/">使用 supervisor 管理进程</a><br /></li>
+<li><a href="http://supervisord.org/">supervisor官方文档</a></li>
+</ul>
+
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">xychen</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">2017-12-16</span>
+  </p>
+  
+  
+</div>
+
+    
+    
+
+    <footer class="post-footer">
+      
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="xychen.github.io/post/2017-12-16-conf-fine/">
+            <span class="next-text nav-default">常用配置文件的查找</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://github.com/xychen" class="iconfont icon-github" title="github"></a>
+      <a href="https://weibo.com/u/1784822961" class="iconfont icon-weibo" title="weibo"></a>
+  <a href="xychen.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    
+      2017 - 
+    2018
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">xychen</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/xychen.github.io/lib/highlight/highlight.pack.js?v=20171001"></script><script type="text/javascript" src="/xychen.github.io/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/xychen.github.io/lib/slideout/slideout-1.0.1.min.js"></script>
+  <script type="text/javascript" src="/xychen.github.io/lib/fancybox/jquery.fancybox-3.1.20.min.js"></script>
+
+
+<script type="text/javascript" src="/xychen.github.io/dist/even.min.js?v=3.2.0"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -10,7 +10,8 @@ date: 2019-08-05 10:00:00
 在说装饰者模式之前，我们先了解一下array_slice的用法。  
 
 - 函数原型：  
-```
+
+```php
 array_reduce ( array $array , callable $callback [, mixed $initial = NULL ] ) : mixed
 ```
 
@@ -18,7 +19,7 @@ array_reduce() 将回调函数 callback 迭代地作用到 array数组中的每�
 
 - 例1：  
 
-```
+```php
 function sum($carry, $item)
 {
     $carry += $item;
@@ -31,11 +32,11 @@ var_dump(array_reduce($a, "sum")); // int(10)
 var_dump(array_reduce($a, "sum", 10)); // int(20)
 ```
 
-把sum函数迭代到$a数组中，注意：array_reduce($a, "sum")中，由于没有设置第3个参数，所以$carry的值第一次是null，一定要做好妥善处理，这个调用的结果就是1+2+3+4 = 10 。而array_reduce($a, "sum", 10)有一个初始值10，所以结果是10+1+2+3+4 = 20。  
+把sum函数迭代到$a数组中，注意：array_reduce($a, "sum")中，由于没有设置第3个参数，所以$carry的值第一次是null，一定要做好妥善处理，这个调用的结果就是null+1+2+3+4 = 10 。而array_reduce($a, "sum", 10)有一个初始值10，所以结果是10+1+2+3+4 = 20。  
 
 - 例2： 对上边的例子做一下等价换算  
 
-```
+```php
 array_reduce([1, 2, 3, 4], "sum");
 array_reduce([2, 3, 4],    "sum",           sum(null, 1)                );
 array_reduce([3, 4],       "sum",       sum(sum(null, 1), 2)            );
@@ -50,7 +51,7 @@ sum(sum(sum(sum(null, 1), 2), 3), 4);
 ## 中间件的实现  
 
 首先，我们选用《Laravel框架关键技术解析》中的列子：  
-```
+```php
 interface Middleware
 {
   public static function handle(Closure $next);
@@ -163,7 +164,8 @@ then();
 ### then函数拆解
 
 - 首先，对then函数中的代码做一个简单的精简，可以看到array_reduce的第二个参数是一个函数调用getSlice()，那么我们可以直接转成一个函数f  
-```
+
+```php
 function f($stack, $pipe)
 {
   return function() use ($stack, $pipe)
@@ -172,13 +174,15 @@ function f($stack, $pipe)
   };
 }
 ```
-那么对于的调用就变成了：  
-```
+那么对于的调用就变成了：
+
+```php
 call_user_func(array_reduce($pipes, "f", $firstSlice));
 ```
 
-- 然后把函数进一步拆解：
-```
+- 然后把函数进一步拆解：  
+
+```php
 $res = array_reduce($pipes, "f", $firstSlice);
 call_user_func($res);
 ```
@@ -189,7 +193,7 @@ call_user_func($res);
 
 - 我们把$pipes精简成3个，另外暂时不考虑顺序（即不考虑array_reverse）  
 
-```
+```php
 array_reduce(["EncryptCookies","StartSession","VerifyCsrfToken"], "f", $firstSlice);
 
 array_reduce(["StartSession","VerifyCsrfToken"], "f", f($firstSlice, "EncryptCookies"));
@@ -201,14 +205,15 @@ array_reduce([], "f", f(f(f($firstSlice, "EncryptCookies"),"StartSession"), "Ver
 f(f(f($firstSlice, "EncryptCookies"),"StartSession"), "VerifyCsrfToken");
 ```
 
-- 再来拆解一下f($firstSlice, "EncryptCookies")，返回值是一个函数:  
-```
+- 再来拆解一下f($firstSlice, "EncryptCookies")，返回值是一个函数:   
+ 
+```php
 function()
 {
     return EncryptCookies::handle($firstSlice);
 }
 
-handle函数中的调用：
+//handle函数中的调用：
 function handle(Closure $next)
 {
     echo "对输入请求的cookie进行解密\n";
@@ -219,20 +224,21 @@ function handle(Closure $next)
 ```
 
 - 拆解f(f($firstSlice, "EncryptCookies"),"StartSession")
-```
-第1步转换：
+
+```php
+//第1步转换：
 f(function(){
     return EncryptCookies::handle($firstSlice);
 }, "StartSession");
 
-第2步转换：
+//第2步转换：
 function() {
     StartSession::handle(function(){
         return EncryptCookies::handle($firstSlice);
     });
 }
 
-对应的handle函数：
+//对应的handle函数：
 function handle(Closure $next)
 {
     echo "开启session, 获取数据.\n";
@@ -242,26 +248,27 @@ function handle(Closure $next)
 ```
 
 - 拆解f(f(f($firstSlice, "EncryptCookies"),"StartSession"), "VerifyCsrfToken")  
-```
-第1步转换：
+
+```php
+//第1步转换：
 f(function() {
     StartSession::handle(function(){
         return EncryptCookies::handle($firstSlice);
     });
 }, "VerifyCsrfToken");
-第2步转换：
+//第2步转换：
 VerifyCsrfToken::handle(function() {
     StartSession::handle(function(){
         return EncryptCookies::handle($firstSlice);
     });
 });
-对应的handle函数：
+//对应的handle函数：
 function handle(Closure $next)
 {
     echo "验证csrf-token\n";
     $next();   
 }
-$next对应的函数调用为：
+//$next对应的函数调用为：
 VerifyCsrfToken::handle(function() {
     StartSession::handle(function(){
         return EncryptCookies::handle($firstSlice);

@@ -119,7 +119,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 
   [params.gitalk]           # Gitalk is a comment system based on GitHub issues. see https://github.com/gitalk/gitalk
     owner = "xychen"              # Your GitHub ID
-    repo = "https://github.com/xychen/gitalk"               # The repo to store comments
+    repo = "blog"               # The repo to store comments
     clientId = "81e29cbac29084aad10d"           # Your client ID
     clientSecret = "338cdd3a822b28c81521b9ea40010114d191ad2b"       # Your client secret
 

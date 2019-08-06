@@ -1,6 +1,8 @@
 ---
 title: "使用netcat与服务器间传输文件"
 date: 2016-07-02 02:00:00
+categories: ["linux"]
+tags: ["nc", "netcat"]
 ---
 
 ### 前言

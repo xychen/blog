@@ -1,6 +1,8 @@
 ---
 title: "排查php中curl请求超时问题"
 date: 2016-09-18 09:00:00
+categories: ["php"]
+tags: ["strace", "php"]
 ---
 
 ### 问题描述  

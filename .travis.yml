@@ -3,8 +3,8 @@ language: go
 git:
     depth: 1
 install:
-    go mod init cxyblog 
-    go get -v github.com/gohugoio/hugo@v0.56.3
+    - go mod init cxyblog 
+    - go get -v github.com/gohugoio/hugo@v0.56.3
 script:
     hugo
 deploy:

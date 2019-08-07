@@ -3,8 +3,10 @@ language: go
 git:
     depth: 1
 install:
-    - go mod init cxyblog 
-    - go get -v github.com/gohugoio/hugo@v0.56.3
+    # - go mod init cxyblog 
+    # - go get -v github.com/gohugoio/hugo@v0.56.3
+    - wget https://github.com/gohugoio/hugo/releases/download/v0.56.3/hugo_0.56.3_Linux-64bit.deb
+    - sudo dpkg -i hugo*.deb
 script:
     hugo
 deploy:

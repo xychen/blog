@@ -5,7 +5,7 @@ git:
 install:
     # - go mod init cxyblog 
     # - go get -v github.com/gohugoio/hugo@v0.56.3
-    - wget https://github.com/gohugoio/hugo/releases/download/v0.56.3/hugo_0.56.3_Linux-64bit.deb
+    - wget https://github.com/gohugoio/hugo/releases/download/v0.89.4/hugo_0.89.4_Linux-64bit.deb
     - sudo dpkg -i hugo*.deb
 script:
     hugo
@@ -17,7 +17,7 @@ deploy:
         branch: master
     local_dir: public
     repo: xychen/xychen.github.io
-    fqdn: <custom-domain-if-needed>
+    #fqdn: <custom-domain-if-needed>
     target_branch: master
     email: cxybjfu@126.com
     name: xychen

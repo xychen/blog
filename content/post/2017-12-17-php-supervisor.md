@@ -49,7 +49,7 @@ environment = USER="test",APP_ENV="test"
 我会重点对我备注的这几个配置项如何在PHP项目中正确使用进行说明，并进行代码展示。
 假设的场景，test.php脚本文件的作用是从redis队列中读取数据，并处理数据:  
 
-```
+```php
 $job = new Job();
 $job->handle();
 
@@ -170,7 +170,7 @@ autorestart = true  //进程退出后，是否自动重启该进程
 
 至此，我们已经完成了supervisor管理php进程的功能。完整代码如下:
 
-```
+```php
 $job = new Job();
 $job->handle();
 
